@@ -1,0 +1,23 @@
+services:
+  redis:
+    image: redis:7.2
+    ports:
+      - "6379:6379"
+
+  app:
+    build: .
+    depends_on:
+      - redis
+    command: python -m app.schedule_demo
+
+  worker:
+    build: .
+    depends_on:
+      - redis
+    command: celery -A app.celery_app:celery_app worker -l INFO
+
+  beat:
+    build: .
+    depends_on:
+      - redis
+    command: celery -A app.celery_app:celery_app beat -S redbeat.RedBeatScheduler -l INFO
