@@ -1,0 +1,84 @@
+.about-project {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.content-block {
+  background: white;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.content-block:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.content-block h2 {
+  color: #667eea;
+  border-bottom: 2px solid #667eea;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.content-block p {
+  line-height: 1.8;
+  margin-bottom: 1rem;
+  color: #555;
+}
+
+.content-block ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.content-block ul li {
+  padding: 0.75rem 0;
+  padding-left: 1.5rem;
+  position: relative;
+  color: #555;
+  line-height: 1.6;
+}
+
+.content-block ul li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: #667eea;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.content-block ul li strong {
+  color: #333;
+}
+
+.team-info p {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #eee;
+}
+
+.team-info p:last-child {
+  border-bottom: none;
+}
+
+.team-info strong {
+  color: #667eea;
+  display: inline-block;
+  min-width: 200px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .content-block {
+    padding: 1.5rem;
+  }
+
+  .team-info strong {
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+}
