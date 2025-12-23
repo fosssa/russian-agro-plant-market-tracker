@@ -1,0 +1,77 @@
+{
+    "folders": [
+        {
+            "path": "backend",
+            "name": "Backend (Python)"
+        },
+        {
+            "path": "frontend",
+            "name": "Frontend (React)"
+        },
+        {
+            "path": ".",
+            "name": "Root"
+        }
+    ],
+    "settings": {
+        "python.defaultInterpreterPath": "${workspaceFolder:Backend (Python)}/.venv/Scripts/python",
+        "[python]": {
+            "editor.formatOnSave": true,
+            "editor.defaultFormatter": "ms-python.python"
+        },
+        "[javascript]": {
+            "editor.formatOnSave": true,
+            "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+        },
+        "files.exclude": {
+            "**/node_modules": true,
+            "**/venv": true,
+            "**/__pycache__": true
+        }
+    },
+    "extensions": {
+        "recommendations": [
+            // fronend
+            "dbaeumer.vscode-eslint",
+            "dsznajder.es7-react-js-snippets",
+            "ecmel.vscode-html-css",
+            "yoavbls.pretty-ts-errors",
+            // backend
+            "charliermarsh.ruff",
+            "the0807.uv-toolkit",
+            // misc
+            "ahmadalli.vscode-nginx-conf",
+        ],
+    },
+    "tasks": {
+        "version": "2.0.0",
+        "tasks": [
+            {
+                "label": "Run Backend",
+                "type": "shell",
+                "command": ".venv/Scripts/python",
+                "args": ["main.py"],
+                "options": {
+                    "cwd": "${workspaceFolder:Backend (Python)}"
+                },
+                "isBackground": true,
+                "problemMatcher": "$python"
+            },
+            {
+                "label": "Run Frontend",
+                "type": "shell",
+                "command": "npm",
+                "args": ["run", "dev"],
+                "options": {
+                    "cwd": "${workspaceFolder:Frontend (React)}"
+                },
+                "isBackground": true
+            },
+            {
+                "label": "Run Both",
+                "dependsOn": ["Run Backend", "Run Frontend"],
+                "problemMatcher": []
+            }
+        ]
+    }
+}

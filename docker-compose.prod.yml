@@ -1,17 +1,12 @@
 services:
   backend:
     container_name: agro-backend
-    build:
-      context: ./backend
-      dockerfile: ./docker/Dockerfile
-    ports:
-      - "7000:7000"
-    networks:
-      - agro-network
-    env_file:
-      - .env
+    image: ${CI_REGISTRY_IMAGE}/backend:${DEPLOY_TAG:-latest}
     environment:
       - DATABASE_URL=sqlite:////app/data/app.db
+      - UVICORN_ROOT_PATH=${UVICORN_ROOT_PATH}
+    networks:
+      - agro-network
     volumes:
       # Persist SQLite database
       - agro-db-data:/app/data
@@ -31,15 +26,16 @@ services:
 
   frontend:
     container_name: agro-frontend
-    build:
-      context: ./frontend
-      dockerfile: ./docker/Dockerfile
+    image: ${CI_REGISTRY_IMAGE}/frontend:${DEPLOY_TAG:-latest}
+    environment:
+      - VITE_API_BASE_URL=${VITE_API_BASE_URL}
+      - VITE_API_TIMEOUT=${VITE_API_TIMEOUT}
+      - BASIC_AUTH_USER=${BASIC_AUTH_USER}
+      - BASIC_AUTH_PASSWORD=${BASIC_AUTH_PASSWORD}
     ports:
-      - "7073:7073"
+      - "80:7073"
     networks:
       - agro-network
-    env_file:
-      - .env
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:7073/health"]
