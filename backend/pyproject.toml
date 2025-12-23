@@ -1,13 +1,17 @@
 [project]
 name = "backend"
 version = "0.1.0"
-description = "Add your description here"
+description = "Backend API for Russian Agro Plant Market Tracker"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "basedpyright>=1.35.0",
+    "celery>=5.5.3",
+    "celery-redbeat>=2.3.3",
     "fastapi[standard]>=0.124.0",
     "pydantic>=2.12.5",
+    "redis>=7.1.0",
     "sqlalchemy>=2.0.0",
+    "structlog>=25.5.0",
     "uvicorn>=0.38.0",
 ]

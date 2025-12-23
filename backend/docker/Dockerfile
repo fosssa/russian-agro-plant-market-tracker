@@ -40,7 +40,15 @@ COPY --chown=appuser:appuser . .
 # Set environment variables
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
-    PATH="/app/.venv/bin:$PATH"
+    PATH="/app/.venv/bin:$PATH" \
+    REDIS_HOST=redis \
+    REDIS_PORT=6379
+
+# Expose the API port
+EXPOSE 7000
 
 # Switch to non-root user
 USER appuser
+
+# Default command - run the FastAPI app
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "7000"]

@@ -5,8 +5,10 @@ from celery import Celery
 from celery.signals import setup_logging
 from .config import CeleryConfig
 
+
 def _configure_structlog():
-    # Human-readable processor for cleaner output
+    """Configure structlog for human-readable Celery task logging."""
+    
     def human_readable_processor(logger, method_name, event_dict):
         timestamp = event_dict.get('timestamp', '')
         level = event_dict.get('level', '').upper()
@@ -15,12 +17,11 @@ def _configure_structlog():
         # Extract task info if present
         task = event_dict.get('task', '')
         if task:
-            x = event_dict.get('x', '')
-            y = event_dict.get('y', '')
+            args = event_dict.get('args', '')
             result = event_dict.get('result', '')
             
-            if x and y and message == 'task.start':
-                return f"[{timestamp}] STARTED: Task {task} with args ({x}, {y})"
+            if message == 'task.start':
+                return f"[{timestamp}] STARTED: Task {task} with args {args}"
             elif result and message == 'task.done':
                 return f"[{timestamp}] FINISHED: Task {task} with result: {result}"
         
@@ -38,7 +39,7 @@ def _configure_structlog():
         cache_logger_on_first_use=True,
     )
 
-    # Filter out noisy Celery logs
+    # Configure standard logging
     class TaskOnlyFilter(logging.Filter):
         def filter(self, record):
             return True
@@ -92,12 +93,13 @@ def _configure_structlog():
         },
     })
 
+
 @setup_logging.connect
 def setup_celery_logging(**kwargs):
+    """Signal handler to configure logging when Celery starts."""
     _configure_structlog()
 
-celery_app = Celery("russian-agro-plant-market-tracker")
-celery_app.config_from_object(CeleryConfig)
 
-# Initialize logging when imported outside Celery worker
-_configure_structlog()
+# Create Celery application instance
+celery_app = Celery("agro-backend")
+celery_app.config_from_object(CeleryConfig)
