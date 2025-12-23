@@ -6,7 +6,7 @@
 
 ```
 backend/
-├── celery/
+├── celery_app/
 │   ├── __init__.py
 │   ├── celery_app.py      # Конфигурация Celery приложения
 │   ├── config.py          # Настройки Celery и Redis
@@ -45,15 +45,15 @@ docker run -p 6379:6379 redis:7.2
 
 ```bash
 # Worker (из директории backend)
-celery -A celery.celery_app:celery_app worker -l INFO
+celery -A celery_app.celery_app:celery_app worker -l INFO
 
 # Beat scheduler (из директории backend)
-celery -A celery.celery_app:celery_app beat -S redbeat.RedBeatScheduler -l INFO
+celery -A celery_app.celery_app:celery_app beat -S redbeat.RedBeatScheduler -l INFO
 ```
 
 ## Добавление задач
 
-1. Определите задачу в `backend/celery/tasks.py`:
+1. Определите задачу в `backend/celery_app/tasks.py`:
 
 ```python
 @celery_app.task(name="my.task", bind=True)
@@ -61,7 +61,7 @@ def my_task(self, arg1, arg2):
     return arg1 + arg2
 ```
 
-2. Создайте расписание программно используя `backend/celery/scheduler.py`:
+2. Создайте расписание программно используя `backend/celery_app/scheduler.py`:
 
 ```python
 from celery.scheduler import upsert_entry
@@ -77,7 +77,7 @@ upsert_entry(
 
 ## Конфигурация
 
-Основные настройки в `backend/celery/config.py`:
+Основные настройки в `backend/celery_app/config.py`:
 - `broker_url` - URL Redis брокера (настраивается через REDIS_HOST, REDIS_PORT)
 - `result_backend` - URL хранилища результатов
 - `redbeat_redis_url` - URL Redis для RedBeat расписаний

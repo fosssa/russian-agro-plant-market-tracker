@@ -21,7 +21,7 @@ class CeleryConfig:
     worker_send_task_events = True
 
     # Ensure tasks are registered on worker start
-    imports = ('celery.tasks',)
+    imports = ('celery_app.tasks',)
 
     # RedBeat / Beat scheduler configuration
     beat_scheduler = 'redbeat.RedBeatScheduler'

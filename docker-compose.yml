@@ -33,7 +33,7 @@ services:
     environment:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
-    command: celery -A celery.celery_app:celery_app worker -l INFO
+    command: celery -A celery_app.celery_app:celery_app worker -l INFO
 
   celery-beat:
     build:
@@ -45,5 +45,5 @@ services:
     environment:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
-    command: celery -A celery.celery_app:celery_app beat -S redbeat.RedBeatScheduler -l INFO
+    command: celery -A celery_app.celery_app:celery_app beat -S redbeat.RedBeatScheduler -l INFO
 

@@ -11,7 +11,7 @@ from repositories.organization_repository import OrganizationRepository
 from repositories.product_repository import ProductRepository
 from repositories.record_repository import RecordRepository
 from db import get_db
-from celery.tasks import collect_data_for_source
+from celery_app.tasks import collect_data_for_source
 
 router = APIRouter(prefix="/api", tags=["api"])
 
