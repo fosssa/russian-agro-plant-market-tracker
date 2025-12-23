@@ -4,7 +4,7 @@
 
 import apiClient from './api';
 import type { DataSource } from '../types/api';
-import type { DataSourcesResponse } from '../types/api';
+import type { DataSourcesResponse, TriggerDataCollectionResponse } from '../types/api';
 
 // Export DataSource type for component usage
 export type { DataSource };
@@ -20,6 +20,22 @@ export const getDataSources = async (): Promise<DataSource[]> => {
     return response.data.data;
   } catch (error) {
     console.error('Error fetching data sources:', error);
+    throw error;
+  }
+};
+
+/**
+ * Trigger data collection for a specific data source
+ * @param sourceId - ID of the data source to collect data from
+ * @returns Promise resolving to TriggerDataCollectionResponse
+ * @throws Error if API request fails
+ */
+export const triggerDataCollection = async (sourceId: number): Promise<TriggerDataCollectionResponse> => {
+  try {
+    const response = await apiClient.post<TriggerDataCollectionResponse>(`/api/data-sources/${sourceId}/collect`);
+    return response.data;
+  } catch (error) {
+    console.error('Error triggering data collection:', error);
     throw error;
   }
 };

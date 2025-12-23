@@ -52,3 +52,22 @@ class DataSourcesResponse(BaseModel):
                 "total": 1
             }
         }
+
+
+class TriggerDataCollectionResponse(BaseModel):
+    """Response model for triggering data collection task."""
+    
+    success: bool = Field(..., description="Whether the task was successfully triggered")
+    message: str = Field(..., description="Status message")
+    task_id: str = Field(..., description="Celery task ID for tracking")
+    source_id: int = Field(..., description="ID of the data source")
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "success": True,
+                "message": "Data collection task triggered successfully",
+                "task_id": "abc123-def456",
+                "source_id": 1
+            }
+        }

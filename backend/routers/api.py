@@ -5,12 +5,13 @@ from sqlalchemy.orm import Session
 from typing import Any
 from datetime import datetime, timedelta
 
-from models.data_source import DataSource, DataSourcesResponse
+from models.data_source import DataSource, DataSourcesResponse, TriggerDataCollectionResponse
 from models.visualization import FilterOption, FilterOptionsResponse, ChartData
 from repositories.organization_repository import OrganizationRepository
 from repositories.product_repository import ProductRepository
 from repositories.record_repository import RecordRepository
 from db import get_db
+from celery.tasks import collect_data_for_source
 
 router = APIRouter(prefix="/api", tags=["api"])
 
@@ -53,6 +54,46 @@ async def get_data_sources_endpoint(db: Session = Depends(get_db)) -> dict[str, 
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error retrieving data sources: {str(e)}")
+
+
+@router.post("/data-sources/{source_id}/collect", response_model=TriggerDataCollectionResponse)
+async def trigger_data_collection_endpoint(source_id: int, db: Session = Depends(get_db)) -> dict[str, Any]:
+    """Trigger data collection for a specific data source.
+    
+    This endpoint initiates an asynchronous data collection task via Celery.
+    The task will collect data from the specified source and update the
+    last run date and status upon completion.
+    
+    Args:
+        source_id: ID of the data source to collect data from
+    
+    Returns:
+        TriggerDataCollectionResponse with task info
+        
+    Raises:
+        HTTPException: If the source doesn't exist or task fails to start
+    """
+    try:
+        # Verify the source exists
+        org_repo = OrganizationRepository(db)
+        organization = org_repo.get_by_id(source_id)
+        
+        if not organization:
+            raise HTTPException(status_code=404, detail=f"Data source with id {source_id} not found")
+        
+        # Trigger the Celery task
+        task = collect_data_for_source.delay(source_id)
+        
+        return {
+            "success": True,
+            "message": f"Data collection task triggered for source '{organization['name']}'",
+            "task_id": task.id,
+            "source_id": source_id
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error triggering data collection: {str(e)}")
 
 
 @router.get("/filters/{filter_type}", response_model=FilterOptionsResponse)

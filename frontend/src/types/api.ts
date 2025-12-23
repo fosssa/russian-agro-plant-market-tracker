@@ -35,3 +35,11 @@ export interface ChartData {
   seriesData: number[];
   seriesName: string;
 }
+
+// TriggerDataCollectionResponse - matches backend data_source.py
+export interface TriggerDataCollectionResponse {
+  success: boolean;
+  message: string;
+  task_id: string;
+  source_id: number;
+}
